@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{template}"
+>
+<head>
+<meta charset="utf-8">
+
+<title>Products</title>
+<link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/4.4.1/bootstrap.min.js"></script>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="container mt-5">
+	<div class="card">
+	<div class="card-header">Liste de produits</div>
+	<div class="card-body">
+		<form th:action="@{products}" method="get">
+			<div class="mb-5">
+				<label class="control-label">Mot cle:</label>
+				<input type="text" name="motCle" th:value="${motCle}" class="form-control" />
+				<button class="btn btn-primary">Chercher</button>
+			</div>
+		</form>
+		<table class="table">
+			<tr>
+			<th>ID</th><th>DES</th><th>PRIX</th><th>QTE</th>
+			</tr>
+			<tr th:each="p:${pageproduits.content}">
+				<td th:text="${p.id}"></td>
+				<td th:text="${p.designation}"></td>
+				<td th:text="${p.prix}"></td>
+				<td th:text="${p.quantite}"></td>
+				<td><a onClick="javascript:return confirm('you sure to detele?')" class="btn btn-danger" th:href="@{deleteProduits(id=${p.id},page=${currentpage},size=${size},motCle=${motCle})}">Delete</a></td>
+				<td><a onClick="javascript:return confirm('you sure to detele?')" class="btn" th:href="@{deleteProduits(id=${p.id},page=${currentpage},size=${size},motCle=${motCle})}">Edit</a></td>
+			</tr>
+		
+		</table>
+		<ul class="nav nav-pills">
+			<li th:each="page,status:${pages}">
+				<a th:class="${status.index==currentpage?'btn btn-primary':'btn'}" class="btn" th:href="@{products(page=${status.index},size=${size},motCle=${motCle})}" th:text="${status.index}"></a>
+			</li>
+		</ul>
+	</div>
+	</div>
+	</div>
+</div>
+</body>
+</html>
