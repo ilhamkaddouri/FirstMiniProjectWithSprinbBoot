@@ -11,8 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.SpringBootProject.dao.ProduitRepository;
 import com.example.SpringBootProject.entities.Produit;
@@ -42,12 +44,33 @@ public class ProduitController {
 	@GetMapping(path="/formProduit")
 	public String formProduit(Model model) {
 		model.addAttribute("produit",new Produit());
+		model.addAttribute("mode","new");
 		return "formProduit";
 	}
 	@PostMapping(path="/saveProduit")
-	public String saveProduit(@Valid Produit produit,BindingResult bindingresult) {
+	public String saveProduit(Model model,@Valid Produit produit,BindingResult bindingresult) {
 		if(bindingresult.hasErrors()) return "formProduit";
 		produitRepository.save(produit);
+		model.addAttribute("produi",produit);
+		return "confirmation";
+	}
+	@GetMapping(path="/editProduit")
+	public String editProduit(Model model,Long id) {
+		Produit p = produitRepository.findById(id).get();
+		model.addAttribute("produit",p);
+		model.addAttribute("mode","edit");
 		return "formProduit";
 	}
+	//format JSON
+	@GetMapping(path="/listproducts")
+	@ResponseBody
+	public List<Produit> list() {
+		return produitRepository.findAll();
+	}
+	//format JSON for one item
+		@GetMapping(path="/product/{id}")
+		@ResponseBody
+		public Produit getOne(@PathVariable Long id) {
+			return produitRepository.findById(id).get();
+		}
 }
